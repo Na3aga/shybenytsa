@@ -170,13 +170,18 @@ def hangman(secret_word):
     print("\n\n Welcome to the game Hangman!!!\n I am thinking of a word that is "+str(length)+" letters long.\n "+"-"*47)
     while(guesses_left>=1):
         letters_guessed = get_new_guess(guesses_left,secret_word,letters_guessed)
+        if is_word_guessed(secret_word, letters_guessed):
+            print("\n\n\n And you won!!! The word is " + secret_word)
+            guesses_left == 0
+
         guesses_left -= 1
+
 
     print("\n You have used all your chances\nHangman game stopped!!!")
     if is_word_guessed(secret_word,letters_guessed):
         print(" And you won!!! The word is " + secret_word)
     else:
-        print("And you lost ... The word was" + secret_word)
+        print("And you lost ... The word was - " + secret_word)
 
 
 # When you've completed your hangman function, scroll down to the bottom
@@ -201,9 +206,10 @@ def match_with_gaps(my_word, other_word):
     result = False
     if len(my_word)==len(other_word):
         for i in range(len(my_word)):
-            if my_word[i]!="_" and my_word[i]==other_word[i]:
+            if my_word[i]==other_word[i]:
                 result = True
-            else: return False
+            if my_word[i] != "_" and my_word[i] != other_word[i]:
+                    return False
     return result
 
 def show_possible_matches(my_word):
@@ -255,12 +261,15 @@ def hangman_with_hints(secret_word):
     '''
 
     length = len(secret_word)
-    guesses_left = 6
+    guesses_left = 15
     letters_guessed = []
     print("\n\n Welcome to the game Hangman!!!\n I am thinking of a word that is " + str(
         length) + " letters long.\n " + "-" * 47)
     while (guesses_left >= 1):
         letters_guessed = get_new_guess(guesses_left, secret_word, letters_guessed)
+        if is_word_guessed(secret_word, letters_guessed):
+            print(" And you won!!! The word is " + secret_word)
+            guesses_left == 0
         guesses_left -= 1
         show_possible_matches(get_guessed_word(secret_word,letters_guessed))
 
@@ -268,7 +277,7 @@ def hangman_with_hints(secret_word):
     if is_word_guessed(secret_word, letters_guessed):
         print(" And you won!!! The word is "+secret_word)
     else:
-        print("And you lost ... The word was"+secret_word)
+        print("And you lost ... The word was - "+secret_word)
 
 
 
@@ -285,12 +294,5 @@ if __name__ == "__main__":
     # uncomment the following two lines.
     
     secret_word = choose_word(wordlist)
-    hangman(secret_word)
-
-###############
-    
-    # To test part 3 re-comment out the above lines and 
-    # uncomment the following two lines. 
-    
-    #secret_word = choose_word(wordlist)
-    #hangman_with_hints(secret_word)
+    # hangman(secret_word)
+    hangman_with_hints(secret_word)
