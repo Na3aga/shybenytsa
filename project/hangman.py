@@ -165,7 +165,7 @@ def hangman(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     length = len(secret_word)
-    guesses_left = 6
+    guesses_left = len+6
     letters_guessed=[]
     print("\n\n Welcome to the game Hangman!!!\n I am thinking of a word that is "+str(length)+" letters long.\n "+"-"*47)
     while(guesses_left>=1):
@@ -261,7 +261,7 @@ def hangman_with_hints(secret_word):
     '''
 
     length = len(secret_word)
-    guesses_left = 15
+    guesses_left = len + 6
     letters_guessed = []
     print("\n\n Welcome to the game Hangman!!!\n I am thinking of a word that is " + str(
         length) + " letters long.\n " + "-" * 47)
