@@ -165,16 +165,18 @@ def hangman(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     length = len(secret_word)
-    guesses_left = len+6
+    guesses_left = 6
     letters_guessed=[]
     print("\n\n Welcome to the game Hangman!!!\n I am thinking of a word that is "+str(length)+" letters long.\n "+"-"*47)
     while(guesses_left>=1):
+        old = get_guessed_word(secret_word,letters_guessed)
         letters_guessed = get_new_guess(guesses_left,secret_word,letters_guessed)
+        new = get_guessed_word(secret_word,letters_guessed)
         if is_word_guessed(secret_word, letters_guessed):
             print("\n\n\n And you won!!! The word is " + secret_word)
             guesses_left == 0
-
-        guesses_left -= 1
+        if old==new:
+            guesses_left -= 1
 
 
     print("\n You have used all your chances\nHangman game stopped!!!")
@@ -261,16 +263,19 @@ def hangman_with_hints(secret_word):
     '''
 
     length = len(secret_word)
-    guesses_left = len + 6
+    guesses_left = 6
     letters_guessed = []
     print("\n\n Welcome to the game Hangman!!!\n I am thinking of a word that is " + str(
         length) + " letters long.\n " + "-" * 47)
     while (guesses_left >= 1):
+        old = get_guessed_word(secret_word, letters_guessed)
         letters_guessed = get_new_guess(guesses_left, secret_word, letters_guessed)
+        new = get_guessed_word(secret_word, letters_guessed)
         if is_word_guessed(secret_word, letters_guessed):
             print(" And you won!!! The word is " + secret_word)
             guesses_left == 0
-        guesses_left -= 1
+        if old == new:
+            guesses_left -= 1
         show_possible_matches(get_guessed_word(secret_word,letters_guessed))
 
     print("\n You have ran out of all your guesses.")
