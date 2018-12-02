@@ -10,9 +10,14 @@
 # but you will have to know how to use the functions
 # (so be sure to read the docstrings!)
 import random
+import re
 import string
 
 WORDLIST_FILENAME = "words.txt"
+guesses_left = 0
+letters_guessed = []
+secret_word = ""
+
 
 
 def load_words():
@@ -103,27 +108,37 @@ def get_available_letters(letters_guessed):
 
 
 def is_correct_guess(letter,letters_guessed):
-    try:
-        str(letter)
-    except TypeError:
-        print("-please use a lowcase letter")
-        return False
+    global secret_word
+    global guesses_left
+    print(" ")
     if len(letter)>1:
-        print("-please use a lowcase letter(one per guess)")
+        print("-please enter only one letter")
+        guesses_left = guesses_left - 1
         return False
+    if not re.match(r"[a-z]{1}",letter):
+        print("-please enter a lowcase letter")
+        guesses_left = guesses_left - 1
+        return False
+
     avaliable_letters = get_available_letters(letters_guessed)
     for i in avaliable_letters:
-        if i == letter: return True
-    print("-You have already used this letter(or it is not a letter)")
+        if i == letter: return is_right_guess(letter,secret_word)
+    print("-You have already used this letter")
+    guesses_left -= 1
     return False
 
 
 
 def is_right_guess(letter, secret_word):
+    global guesses_left
+    global letters_guessed
     for i in secret_word:
         if i == letter:
+            print(" Good guess: ",end="")
             return True
-    return False
+    print("Ooops!It is not in my word... ",end="")
+    guesses_left -= 1
+    return True
 
 def get_new_guess(guesses_left,secret_word,letters_guessed):
     print(" You have "+str(guesses_left)+" guesses left .")
@@ -131,15 +146,14 @@ def get_new_guess(guesses_left,secret_word,letters_guessed):
     letter = input(" Enter your guess(one letter): ")
     if is_correct_guess(letter,letters_guessed):
         letters_guessed.append(letter)
-        if is_right_guess(letter,secret_word):
-            print(" Good guess: "+get_guessed_word(secret_word,letters_guessed))
-            return letters_guessed
-    print("Ooops!It is not in my word(or you have already guessed it): "+get_guessed_word(secret_word,letters_guessed))
+        print(get_guessed_word(secret_word,letters_guessed))
+        return letters_guessed
+    print("Ooops!It is not not correct: "+get_guessed_word(secret_word,letters_guessed))
     return letters_guessed
 
 
 
-def hangman(secret_word):
+def hangman():
     '''
     secret_word: string, the secret word to guess.
     
@@ -164,6 +178,9 @@ def hangman(secret_word):
     
     Follows the other limitations detailed in the problem write-up.
     '''
+    global secret_word
+    global guesses_left
+    global letters_guessed
     length = len(secret_word)
     guesses_left = 6
     letters_guessed=[]
@@ -175,15 +192,13 @@ def hangman(secret_word):
         if is_word_guessed(secret_word, letters_guessed):
             print("\n\n\n And you won!!! The word is " + secret_word)
             guesses_left == 0
-        if old==new:
-            guesses_left -= 1
-
-
-    print("\n You have used all your chances\nHangman game stopped!!!")
+            return
+    print("\n Hangman game stopped!!!")
     if is_word_guessed(secret_word,letters_guessed):
         print(" And you won!!! The word is " + secret_word)
     else:
-        print("And you lost ... The word was - " + secret_word)
+        print(" You have used all your chances")
+        print(" And you lost ... The word was - " + secret_word)
 
 
 # When you've completed your hangman function, scroll down to the bottom
@@ -234,7 +249,7 @@ def show_possible_matches(my_word):
 
 
 
-def hangman_with_hints(secret_word):
+def hangman_with_hints():
     '''
     secret_word: string, the secret word to guess.
     
@@ -261,7 +276,9 @@ def hangman_with_hints(secret_word):
     
     Follows the other limitations detailed in the problem write-up.
     '''
-
+    global secret_word
+    global guesses_left
+    global letters_guessed
     length = len(secret_word)
     guesses_left = 6
     letters_guessed = []
@@ -274,8 +291,7 @@ def hangman_with_hints(secret_word):
         if is_word_guessed(secret_word, letters_guessed):
             print(" And you won!!! The word is " + secret_word)
             guesses_left == 0
-        if old == new:
-            guesses_left -= 1
+            return
         show_possible_matches(get_guessed_word(secret_word,letters_guessed))
 
     print("\n You have ran out of all your guesses.")
@@ -291,13 +307,10 @@ def hangman_with_hints(secret_word):
 # these two lines and run this file to test!
 # Hint: You might want to pick your own secret_word while you're testing.
 
-
 if __name__ == "__main__":
     # pass
-
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
-    
     secret_word = choose_word(wordlist)
     # hangman(secret_word)
-    hangman_with_hints(secret_word)
+    hangman_with_hints()
